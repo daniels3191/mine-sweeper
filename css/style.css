@@ -17,6 +17,7 @@ table {
 }
 
 .hide-text-visibility {
-    visibility: hidden;
-    
+    font-size: 0;
+    overflow: hidden;
+
 }
