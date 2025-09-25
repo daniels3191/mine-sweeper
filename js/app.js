@@ -198,7 +198,7 @@ function expandReveal(elCell, i, j) {
             var elCurrentCell = document.querySelector(`.cell-${i}-${j}`)
             elCurrentCell.classList.remove('hide-text-visibility')
 
-             if (cell.minesAroundCount === 0 && !cell.isMine) expandReveal(elCell, i, j)
+             if (cell.minesAroundCount === 0) expandReveal(elCurrentCell, i, j)
 
         }
     }
