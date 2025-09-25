@@ -7,14 +7,25 @@
     <link rel="stylesheet" href="css/style.css" />
 </head>
 
-<body onload="onInit()" >
+<body onload="onInit()">
     <h1>Mine Sweeper</h1>
 
-     <div id="timerDisplay">00:000</div>
-    <div class="board-container"></div>
+   
+    <div ><span class="lives-display"></span>   <span class="hint-display"></span></div>
+    
+    <div class="board-container">
+        <button onclick="resetGame()" class="reset-game black-backround" >😃</button>
+         <div id="timerDisplay">00:000</div>
+        <table></table>
+    </div>
+    <div class="best-score"></div>
 
     <script src="js/util.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/features.js"></script>
+    <footer>
+        <p> © Daniel Sahar</p>
+    </footer>
 </body>
 
 </html>
