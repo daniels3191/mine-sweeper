@@ -1,11 +1,5 @@
 'use strict'
 
-function onClickDiffuclty(size, mines) {
-    gLevel.SIZE = size
-    gLevel.MINES = mines
-    renderBestScore()
-    onInit(size, mines)
-}
 
 function renderLives() {
     const elLives = document.querySelector('.lives-display')
@@ -37,7 +31,7 @@ function renderhints() {
     const elLives = document.querySelector('.hint-display')
     var str = ''
     for (var i = 0; i < gGame.hints; i++) {
-        str += `<button onclick="hintMode()" class="hint-button black-backround display-mode" >${gElements.hint}</button>`
+        str += `<button onclick="hintMode()" class="hint-button black-backround display-mode hint-display" >${gElements.hint}</button>`
     }
     elLives.innerHTML = str
 }
@@ -236,3 +230,10 @@ function ManuallyPositionedMines() {
     gGame.manualMinesMode = true
 }
 
+function onClickDiffuclty(size, mines) {
+    
+    gLevel.SIZE = size
+    gLevel.MINES = mines
+    renderBestScore()
+    onInit(size, mines)
+}

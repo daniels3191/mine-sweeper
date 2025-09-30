@@ -44,14 +44,15 @@ table {
     border-radius: 12px;
 }
 
-.manual-mines{
-    background-color:cornflowerblue
+.manual-mines {
+    background-color: cornflowerblue
 }
 
 .lives-display {
     text-align: center;
     margin-top: 15px;
     height: 30px;
+    font-size: x-large;
 }
 
 
@@ -59,6 +60,10 @@ table {
     background-color: black;
     ;
     border: 0px solid black;
+}
+
+.hint-display {
+    font-size: x-large;
 }
 
 .hint-button {
@@ -153,24 +158,23 @@ input:checked+.slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
 .dark-mode-toggle {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem; 
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 
 header h1 {
-  text-align: center;
-  margin: 0;
+    text-align: center;
+    margin: 0;
 }
 
 .manual-mines {
     margin-top: 15px;
     margin-bottom: 5px;
 }
-
-

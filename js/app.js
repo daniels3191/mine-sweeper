@@ -286,13 +286,3 @@ function resetGame() {
 }
 
 
-
-
-
-// npte date 20.09
-
-// for next phase of work (secound phase) 23.09 : 
-// 1. checkGameOver() -- V
-// 2. add Timer -- V
-// 3. expandReveal -- V
-
