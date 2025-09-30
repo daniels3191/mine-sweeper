@@ -1,5 +1,12 @@
 'use strict'
 
+function onClickDiffuclty(size, mines) {
+    gLevel.SIZE = size
+    gLevel.MINES = mines
+    renderBestScore()
+    onInit(size, mines)
+}
+
 function renderLives() {
     const elLives = document.querySelector('.lives-display')
     var str = ''
@@ -30,7 +37,7 @@ function renderhints() {
     const elLives = document.querySelector('.hint-display')
     var str = ''
     for (var i = 0; i < gGame.hints; i++) {
-        str += `<button onclick="hintMode()" class="hint-button black-backround">${gElements.hint}</button>`
+        str += `<button onclick="hintMode()" class="hint-button black-backround display-mode" >${gElements.hint}</button>`
     }
     elLives.innerHTML = str
 }
@@ -41,6 +48,7 @@ function hintMode() {
     gGame.hints--
     renderhints()
 }
+
 function expandRevealHintMode(elCell, i, j, action) {
 
     var rowIdx = i
@@ -79,7 +87,7 @@ function saveBestScore() {
     var currentPasedTime = sec * 1000 + millisec
     var itemScore = `Size: ${gLevel.SIZE} Mines: ${gLevel.MINES}`
     var prev_pasedTime = +sessionStorage.getItem(itemScore)
-    
+
     if (!prev_pasedTime || prev_pasedTime > currentPasedTime) {
         sessionStorage.setItem(itemScore, currentPasedTime)
     }
@@ -89,8 +97,10 @@ function renderBestScore() {
 
     const itemScore = `Size: ${gLevel.SIZE} Mines: ${gLevel.MINES}`
     const pasedTime = +sessionStorage.getItem(itemScore)
+    const elBestScore = document.querySelector('.best-score span')
 
-    if (pasedTime !== 0) {
+    if (pasedTime === 0) elBestScore.innerHTML = ''
+    else {
         const seconds = Math.floor(pasedTime / 1000)
         const milliseconds = pasedTime % 1000
         // Format milliseconds to always have three digits
@@ -99,11 +109,130 @@ function renderBestScore() {
         // Format seconds to always have two digits
         const formattseconds = String(seconds).padStart(2, '0')
 
-        const elBestScore = document.querySelector('.best-score')
+        const elBestScore = document.querySelector('.best-score span')
         elBestScore.innerHTML = `${formattseconds} : ${formattedMilliseconds}`
-
-
     }
 }
 
+function safeClick() {
+    if (!gGame.revealedCount || gGame.safeClicks < 1) return
+
+    const emptyCells = allUnClickedAndNOtMineCells()
+    const rndIdx = [getRandomInt(emptyCells.length)]
+    const rndEmptyCell = emptyCells.splice(rndIdx, 1)[0]
+    const elCell = document.querySelector(`.cell-${rndEmptyCell.i}-${rndEmptyCell.j}`)
+
+    elCell.classList.remove('hide-text-visibility')
+    setTimeout(() => {
+        elCell.classList.add('hide-text-visibility')
+    }, "1500")
+
+    gGame.safeClicks--
+    const elClicksAvailable = document.querySelector('.clicks-available span')
+    elClicksAvailable.innerText = gGame.safeClicks
+}
+
+function allUnClickedAndNOtMineCells() {
+    var emptyCells = []
+
+    for (var i = 0; i < gBoard.length; i++) {
+
+        for (var j = 0; j < gBoard[0].length; j++) {
+
+            var cell = gBoard[i][j]
+            if (!cell.isMine && !cell.isRevealed && !cell.isMarked) {
+                emptyCells.push({ i, j })
+            }
+        }
+    }
+    return emptyCells
+}
+
+function displayMode() {
+
+
+    const elDisplayMode = document.querySelectorAll('.display-mode')
+
+    if (!gGame.lightMode) {
+        gGame.lightMode = true
+        changeClassElArr(elDisplayMode, 'add', 'light-mode')
+
+    } else {
+        gGame.lightMode = false
+        changeClassElArr(elDisplayMode, 'remove', 'light-mode')
+    }
+}
+
+function changeClassElArr(elElmentArr, action, chosenClass) {
+
+    for (var i = 0; i < elElmentArr.length; i++) {
+        var element = elElmentArr[i]
+        if (action === 'add') element.classList.add(chosenClass)
+        else element.classList.remove(chosenClass)
+    }
+}
+
+function savePrevMove() {
+
+    gGamePrev.isOn = gGame.isOn
+    gGamePrev.revealedCount = gGame.revealedCount
+    gGamePrev.markedCount = gGame.markedCount
+    gGamePrev.secsPassed = gGame.secsPassed
+    gGamePrev.lives = gGame.lives
+    savePrevBoard()
+
+}
+
+function savePrevBoard() {
+    const size = gLevel.SIZE
+
+    for (var i = 0; i < size; i++) {
+
+        for (var j = 0; j < size; j++) {
+
+            var cell = gBoard[i][j]
+            var cellPrev = gBoardPrev[i][j]
+
+            cellPrev.minesAroundCount = cell.minesAroundCount
+            cellPrev.isRevealed = cell.isRevealed
+            cellPrev.isMine = cell.isMine
+            cellPrev.isMarked = cell.isMarked
+        }
+    }
+}
+
+function undo() {
+
+    renderBoard(gBoardPrev, '.board-container table')
+    for (var i = 0; i < gBoardPrev.length; i++) {
+
+        for (var j = 0; j < gBoardPrev[0].length; j++) {
+            var cell = gBoardPrev[i][j]
+            var elCell = document.querySelector(`.cell-${i}-${j}`)
+            renderCell(elCell, cell)
+
+        }
+    }
+}
+
+function renderCell(elCell, cell) {
+
+
+    if (cell.isMarked) {
+        elCell.innerText = gElements.flag
+        elCell.classList.remove('hide-text-visibility')
+        console.log(elCell);
+
+    } else if (cell.isRevealed) {
+        elCell.classList.remove('hide-text-visibility')
+        console.log(elCell);
+
+    }
+
+}
+
+function ManuallyPositionedMines() {
+
+    gGame.manualMinesMode = true
+}
 

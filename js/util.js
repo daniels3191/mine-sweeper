@@ -68,7 +68,6 @@ function updateTimer() {
     timerDisplay.innerHTML = `${formattseconds} : ${formattedMilliseconds}`
 }
 
-
 function getRandomIntInclusive(min, max) {
     const minCeiled = Math.ceil(min)
     const maxFloored = Math.floor(max)
@@ -78,4 +77,3 @@ function getRandomIntInclusive(min, max) {
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
-//<span class="hide-text-visibility">${cell}</span>

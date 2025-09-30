@@ -6,12 +6,14 @@ var gLevel
 var gGame
 var gstartTime
 var gtimerInterval
+var gGamePrev
+var gBoardPrev
 
-
-function onInit() {
+function onInit(size = 5, mines = 4) {
     setElements()
-    setGame()
+    setGame(size, mines)
     gBoard = buildBoard()
+    gBoardPrev = buildBoard()
     timerDisplay.innerHTML = '00:000'
     gGame.isOn = true
     renderBoard(gBoard, '.board-container table')
@@ -55,33 +57,56 @@ function setMinesNegsCount() {
 
 function onCellClicked(elCell, i, j) {
 
+
     var cell = gBoard[i][j]
+    savePrevMove()
 
     if (!gGame.isOn) return
 
+
     if (gGame.revealedCount === 0) {
-        // The first clicked cell is never a mine
-        // addRandomMines(i, j)
-        // set 2 mines
-        gBoard[3][2].isMine = gBoard[0][0].isMine = true
+
+        if (gGame.manualMinesMode) {
+
+            if (gGame.manualMinesCount < gLevel.MINES) {
+                if (cell.isMine) {
+                    alert('You’ve already placed a mine here, try another cell')
+                    return
+                }
+
+                cell.isMine = true
+                gGame.manualMinesCount++
+                alert(`you have ${gLevel.MINES - gGame.manualMinesCount} to set on the board`)
+                return
+            }
+
+        } else {
+            // The first clicked cell is never a mine
+            addRandomMines(i, j)
+            // set 2 mines
+            // gBoard[3][2].isMine = gBoard[0][0].isMine = true
+        }
+
         setMinesNegsCount()
         renderBoard(gBoard, '.board-container table')
         startTimer()
         var elCell = document.querySelector(`.cell-${i}-${j}`)
         cell = gBoard[i][j]
+        savePrevMove()
+
     }
     if (gGame.hintMode) {
-       expandRevealHintMode(elCell, i, j, 'reveal')
+        expandRevealHintMode(elCell, i, j, 'reveal')
         setTimeout(() => {
-        expandRevealHintMode(elCell, i, j, 'hide')
-    }, "1000")
-        
+            expandRevealHintMode(elCell, i, j, 'hide')
+        }, "1000")
+
         gGame.hintMode = false
         return
 
     }
-
     if (cell.isRevealed || cell.isMarked) return
+
 
 
     cell.isRevealed = true
@@ -98,10 +123,12 @@ function onCellClicked(elCell, i, j) {
 
     if (cell.minesAroundCount === 0 && !cell.isMine) expandReveal(elCell, i, j)
 
+
     checkGameOver()
 }
 
 function onCellMarked(event, elCell, i, j) {
+    savePrevMove()
 
     event.preventDefault()
     var cell = gBoard[i][j]
@@ -126,7 +153,7 @@ function onCellMarked(event, elCell, i, j) {
 
 }
 
-function setGame() {
+function setGame(size, mines) {
     gGame = {
         isOn: false,
         revealedCount: 0,
@@ -135,11 +162,26 @@ function setGame() {
         lives: 3,
         hintMode: false,
         hints: 3,
+        safeClicks: 3,
+        lightMode: false,
+        manualMinesMode: false,
+        manualMinesCount: 0
     }
     gLevel = {
-        SIZE: 4,
-        MINES: 2,
+        SIZE: size,
+        MINES: mines,
     }
+    gGamePrev = {
+        isOn: false,
+        revealedCount: 0,
+        markedCount: 0,
+        secsPassed: 0,
+        lives: 3,
+        i: '',
+        j: '',
+        elCell: '',
+    }
+
 }
 
 function setElements() {
@@ -163,7 +205,7 @@ function checkGameOver() {
     if (gGame.lives) {
         var str = 'You Won! Game Over'
         var smileyState = gElements.smiley_sunglasses
-        
+
     } else {
         var str = 'Game Over Loser'
         var smileyState = gElements.smiley_sad
@@ -198,7 +240,7 @@ function expandReveal(elCell, i, j) {
             var elCurrentCell = document.querySelector(`.cell-${i}-${j}`)
             elCurrentCell.classList.remove('hide-text-visibility')
 
-             if (cell.minesAroundCount === 0) expandReveal(elCurrentCell, i, j)
+            if (cell.minesAroundCount === 0) expandReveal(elCurrentCell, i, j)
 
         }
     }
