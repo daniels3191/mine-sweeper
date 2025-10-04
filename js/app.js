@@ -59,12 +59,10 @@ function setMinesNegsCount() {
 
 function onCellClicked(elCell, i, j) {
 
-
     var cell = gBoard[i][j]
     savePrevMove()
 
     if (!gGame.isOn) return
-
 
     if (gGame.revealedCount === 0) {
 
@@ -109,8 +107,6 @@ function onCellClicked(elCell, i, j) {
     }
     if (cell.isRevealed || cell.isMarked) return
 
-
-
     cell.isRevealed = true
     gGame.revealedCount++
     elCell.classList.add('revealed-backround-style')
@@ -132,6 +128,7 @@ function onCellClicked(elCell, i, j) {
 
 function onCellMarked(event, elCell, i, j) {
     savePrevMove()
+    
 
     event.preventDefault()
     var cell = gBoard[i][j]

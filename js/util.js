@@ -6,12 +6,32 @@ function renderBoard(mat, selector) {
         strHTML += '<tr>'
 
         for (var j = 0; j < mat[0].length; j++) {
-            var cell = mat[i][j].isMine ? gElements.mine : mat[i][j].minesAroundCount
-            const className = `cell cell-${i}-${j}`
+            var cell = ''
+            var className = `cell cell-${i}-${j}`
+            if (mat[i][j].isMarked) {
+                // cell content
+                cell = gElements.flag
+                // hide class
+            } else if (mat[i][j].isMine) {
+                // cell content
+                cell = gElements.mine
+                // hide class
+                className += ` hide-text-visibility`
+            } else if (mat[i][j].isRevealed) {
+                // cell content
+                cell = mat[i][j].minesAroundCount
+                // hide class
+                className += ` revealed-backround-style`
+            } else {
+                // cell content
+                cell = mat[i][j].minesAroundCount
+                // hide class
+                className += ` hide-text-visibility`
+            }
 
             if (cell === 0) cell = ''
 
-            strHTML += `<td class="${className} hide-text-visibility" onclick="onCellClicked(this,${i},${j})" oncontextmenu="onCellMarked(event,this,${i},${j})">${cell}</td>`
+            strHTML += `<td class="${className}" onclick="onCellClicked(this,${i},${j})" oncontextmenu="onCellMarked(event,this,${i},${j})">${cell}</td>`
         }
         strHTML += '</tr>'
     }

@@ -173,11 +173,9 @@ function savePrevMove() {
     gGamePrev.markedCount = gGame.markedCount
     gGamePrev.secsPassed = gGame.secsPassed
     gGamePrev.lives = gGame.lives
-    savePrevBoard()
+    gGamePrev.isOn = gGame.isOn
 
-}
-
-function savePrevBoard() {
+    // Save previous board
     const size = gLevel.SIZE
 
     for (var i = 0; i < size; i++) {
@@ -196,17 +194,13 @@ function savePrevBoard() {
 }
 
 function undo() {
+    // modal
+    changeToPrevMove()
 
-    renderBoard(gBoardPrev, '.board-container table')
-    for (var i = 0; i < gBoardPrev.length; i++) {
+    // dom
+    renderBoard(gBoard, '.board-container table')
 
-        for (var j = 0; j < gBoardPrev[0].length; j++) {
-            var cell = gBoardPrev[i][j]
-            var elCell = document.querySelector(`.cell-${i}-${j}`)
-            renderCell(elCell, cell)
-
-        }
-    }
+    renderLives()
 }
 
 function renderCell(elCell, cell) {
@@ -238,7 +232,34 @@ function onClickDiffuclty(size, mines) {
     onInit(size, mines)
 }
 
-function renderSafeClicks(){
+function renderSafeClicks() {
     const elClicksAvailable = document.querySelector('.clicks-available span')
     elClicksAvailable.innerText = gGame.safeClicks
+}
+
+
+function changeToPrevMove() {
+
+    gGame.isOn = gGamePrev.isOn
+    gGame.revealedCount = gGamePrev.revealedCount
+    gGame.markedCount = gGamePrev.markedCount
+    gGame.secsPassed = gGamePrev.secsPassed
+    gGame.lives = gGamePrev.lives
+    gGame.isOn = gGamePrev.isOn
+
+    // Change to prevvious board
+    const size = gLevel.SIZE
+
+    for (var i = 0; i < size; i++) {
+
+        for (var j = 0; j < size; j++) {
+
+            gBoard[i][j].minesAroundCount = gBoardPrev[i][j].minesAroundCount
+            gBoard[i][j].isRevealed = gBoardPrev[i][j].isRevealed
+            gBoard[i][j].isMine = gBoardPrev[i][j].isMine
+            gBoard[i][j].isMarked = gBoardPrev[i][j].isMarked
+
+        }
+    }
+
 }
