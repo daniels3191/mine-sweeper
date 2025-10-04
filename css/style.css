@@ -16,9 +16,9 @@ table {
     height: 40px;
     text-align: center;
     background-color: rgb(183, 183, 183);
-    border: 2px solid rgb(247, 247, 246);
-    border-bottom: 2px solid rgb(173, 170, 167);
-    border-right: 2px solid rgb(173, 170, 167);
+    border: 3px solid rgb(247, 247, 246);
+    border-bottom: 3px solid rgb(122, 120, 119);
+    border-right: 3px solid rgb(122, 120, 119);
 }
 
 .hide-text-visibility {
@@ -177,4 +177,13 @@ header h1 {
 .manual-mines {
     margin-top: 15px;
     margin-bottom: 5px;
+}
+
+.revealed-backround-style {
+    background-color: rgb(122, 120, 119);
+    border: 0px
+}
+
+.unmarked-mines {
+    margin-right: 150px;
 }

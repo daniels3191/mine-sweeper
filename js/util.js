@@ -6,8 +6,10 @@ function renderBoard(mat, selector) {
         strHTML += '<tr>'
 
         for (var j = 0; j < mat[0].length; j++) {
-            const cell = mat[i][j].isMine ? gElements.mine : mat[i][j].minesAroundCount
+            var cell = mat[i][j].isMine ? gElements.mine : mat[i][j].minesAroundCount
             const className = `cell cell-${i}-${j}`
+
+            if (cell === 0) cell = ''
 
             strHTML += `<td class="${className} hide-text-visibility" onclick="onCellClicked(this,${i},${j})" oncontextmenu="onCellMarked(event,this,${i},${j})">${cell}</td>`
         }
@@ -22,7 +24,7 @@ function renderBoard(mat, selector) {
 function renderCell(location, value) {
     // Select the elCell and set the value
     const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
-    
+
     elCell.innerHTML = value
 }
 
@@ -74,6 +76,7 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled)
 
 }
+
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }

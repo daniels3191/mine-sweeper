@@ -15,7 +15,8 @@ function reduceLive(elCell, cell) {
     gGame.lives--
     cell.isRevealed = false
     gGame.revealedCount--
-    setTimeout(() => {
+    gGame.HideMineTimeOutFunc = setTimeout(() => {
+        elCell.classList.remove('revealed-backround-style')
         elCell.classList.add('hide-text-visibility')
     }, "1500")
     renderLives()
@@ -122,8 +123,7 @@ function safeClick() {
     }, "1500")
 
     gGame.safeClicks--
-    const elClicksAvailable = document.querySelector('.clicks-available span')
-    elClicksAvailable.innerText = gGame.safeClicks
+    renderSafeClicks()
 }
 
 function allUnClickedAndNOtMineCells() {
@@ -231,9 +231,14 @@ function ManuallyPositionedMines() {
 }
 
 function onClickDiffuclty(size, mines) {
-    
+
     gLevel.SIZE = size
     gLevel.MINES = mines
     renderBestScore()
     onInit(size, mines)
+}
+
+function renderSafeClicks(){
+    const elClicksAvailable = document.querySelector('.clicks-available span')
+    elClicksAvailable.innerText = gGame.safeClicks
 }

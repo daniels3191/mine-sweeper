@@ -11,7 +11,7 @@
     <header>
         <h1> Mine Sweeper </h1>
         <div class="dark-mode-toggle">
-            <label><span class="hotkey">Dark Mode</label>
+            <label><span class="hotkey">Light Mode</label>
             <label class="switch" title="Toggle dark mode (D)">
                 <input onclick="displayMode()" id="dark-mode-switch" type="checkbox">
                 <span class="slider round"></span>
@@ -30,7 +30,10 @@
 
     <div class="board-container">
         <button onclick="resetGame()" class="reset-game black-backround display-mode">😃</button>
-        <div id="timerDisplay">00:000</div>
+        <div >
+            <label class="unmarked-mines">000</label>
+            <label id="timerDisplay">00:000</label>
+        </div>
         <table></table>
     </div>
     <div class="best-score">Best Score: <span></span></div>

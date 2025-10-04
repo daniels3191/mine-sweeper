@@ -19,6 +19,8 @@ function onInit(size = 5, mines = 4) {
     renderBoard(gBoard, '.board-container table')
     renderLives()
     renderhints()
+    renderSafeClicks()
+    renderUnMarkedMines()
     renderBestScore()
 }
 
@@ -111,6 +113,7 @@ function onCellClicked(elCell, i, j) {
 
     cell.isRevealed = true
     gGame.revealedCount++
+    elCell.classList.add('revealed-backround-style')
     elCell.classList.remove('hide-text-visibility')
 
 
@@ -124,7 +127,7 @@ function onCellClicked(elCell, i, j) {
     if (cell.minesAroundCount === 0 && !cell.isMine) expandReveal(elCell, i, j)
 
 
-    checkGameOver()
+    checkGameOver(elCell)
 }
 
 function onCellMarked(event, elCell, i, j) {
@@ -139,7 +142,9 @@ function onCellMarked(event, elCell, i, j) {
 
         cell.isMarked = false
         gGame.markedCount--
-        elCell.innerText = cell.isMine ? gElements.mine : cell.minesAroundCount
+        var cellContent = cell.isMine ? gElements.mine : cell.minesAroundCount
+        if (cellContent === 0) cellContent = ''
+        elCell.innerText = cellContent
         if (!cell.isRevealed) elCell.classList.add('hide-text-visibility')
 
     } else {
@@ -149,7 +154,8 @@ function onCellMarked(event, elCell, i, j) {
         elCell.innerText = gElements.flag
         elCell.classList.remove('hide-text-visibility')
     }
-    checkGameOver()
+    renderUnMarkedMines()
+    checkGameOver(elCell)
 
 }
 
@@ -165,7 +171,8 @@ function setGame(size, mines) {
         safeClicks: 3,
         lightMode: false,
         manualMinesMode: false,
-        manualMinesCount: 0
+        manualMinesCount: 0,
+        hideMineTimeOutFunc: ''
     }
     gLevel = {
         SIZE: size,
@@ -197,22 +204,24 @@ function setElements() {
     }
 }
 
-function checkGameOver() {
+function checkGameOver(elCell) {
 
     var cellCount = gLevel.SIZE ** 2
     var mineCount = gLevel.MINES
 
-    if (gGame.lives) {
-        var str = 'You Won! Game Over'
-        var smileyState = gElements.smiley_sunglasses
-
-    } else {
-        var str = 'Game Over Loser'
-        var smileyState = gElements.smiley_sad
-    }
-
     if (gGame.markedCount === mineCount && gGame.revealedCount === (cellCount - mineCount) ||
         gGame.lives === 0) {
+        if (gGame.lives) {
+            var str = 'You Won! Game Over'
+            var smileyState = gElements.smiley_sunglasses
+
+        } else {
+            var str = 'Game Over Loser'
+            var smileyState = gElements.smiley_sad
+            clearTimeout(gGame.HideMineTimeOutFunc)
+            elCell.style.backgroundColor = 'red'
+            revealMines()
+        }
         clearInterval(gtimerInterval)
         renderSmiley(smileyState)
         console.log(str)
@@ -234,11 +243,13 @@ function expandReveal(elCell, i, j) {
             if (i === rowIdx && j === colIdx) continue
 
             var cell = gBoard[i][j]
-            if (cell.isRevealed) continue
+            if (cell.isRevealed || cell.isMarked) continue
             cell.isRevealed = true
+            // elCell.classList.add('revealed-backround-style')
             gGame.revealedCount++
             var elCurrentCell = document.querySelector(`.cell-${i}-${j}`)
             elCurrentCell.classList.remove('hide-text-visibility')
+            elCurrentCell.classList.add('revealed-backround-style')
 
             if (cell.minesAroundCount === 0) expandReveal(elCurrentCell, i, j)
 
@@ -253,7 +264,6 @@ function addRandomMines(i, j) {
     for (var i = 0; i < minesAmount; i++) {
         const rndIdx = [getRandomInt(emptyCells.length)]
         const rndEmptyCell = emptyCells.splice(rndIdx, 1)[0]
-        console.log(rndEmptyCell);
         gBoard[rndEmptyCell.i][rndEmptyCell.j].isMine = true
 
     }
@@ -283,6 +293,29 @@ function resetGame() {
     renderSmiley(gElements.smiley_normal)
     onInit()
     clearInterval(gtimerInterval)
+}
+
+function revealMines() {
+
+    for (var i = 0; i < gBoard.length; i++) {
+
+        for (var j = 0; j < gBoard[0].length; j++) {
+            var cell = gBoard[i][j]
+
+            if (cell.isMine) {
+                var elCurrentCell = document.querySelector(`.cell-${i}-${j}`)
+                elCurrentCell.classList.remove('hide-text-visibility')
+            }
+        }
+    }
+
+}
+
+function renderUnMarkedMines() {
+    const elUnMarkedMines = document.querySelector('.unmarked-mines')
+    const unmarkedMines = gLevel.MINES - gGame.markedCount
+    const formatuUnmarkedMines = String(unmarkedMines).padStart(3, '0')
+    elUnMarkedMines.innerText = formatuUnmarkedMines
 }
 
 
